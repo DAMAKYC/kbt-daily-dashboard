@@ -108,19 +108,23 @@ def daily_bar_acwr(daily_df, acwr_df, title, stacked=False, color="#85063B"):
         barmode="stack",
         paper_bgcolor=CARD, plot_bgcolor=CARD,
         font=dict(color="#777", size=9),
-        xaxis=dict(showgrid=False, tickformat="%m/%d", tickfont=dict(size=8), tickcolor="#444"),
-        yaxis=dict(showgrid=True, gridcolor=GRID, tickfont=dict(size=8), tickcolor="#444", autorange=True),
+        xaxis=dict(showgrid=False, tickformat="%m/%d", tickfont=dict(size=7), tickcolor="#444"),
+        yaxis=dict(showgrid=True, gridcolor=GRID, tickfont=dict(size=7), tickcolor="#444", autorange=True),
         yaxis2=dict(
             overlaying="y", side="right",
             range=[0, 2.2],
             tickvals=[0.8, 1.3],
             showgrid=False,
-            tickfont=dict(size=8, color="#666"),
+            tickfont=dict(size=7, color="#666"),
         ),
-        legend=dict(orientation="h", x=0, y=1.08, font=dict(size=8), bgcolor="rgba(0,0,0,0)"),
-        margin=dict(t=30, b=20, l=35, r=35),
-        height=190,
-        title=dict(text=f"<b>{title}</b>", font=dict(size=11, color="#aaa"), x=0.5),
+        legend=dict(
+            orientation="h", x=0.5, y=1.18, xanchor="center",
+            font=dict(size=7, color="#666"), bgcolor="rgba(0,0,0,0)",
+            itemwidth=30, traceorder="normal",
+        ),
+        margin=dict(t=36, b=16, l=30, r=30),
+        height=185,
+        title=dict(text=f"<b>{title}</b>", font=dict(size=10, color="#888"), x=0.5, y=0.97),
     )
     return fig
 
@@ -138,11 +142,11 @@ def weekly_bar(weekly_df, title, color="#85063B"):
     fig.update_layout(
         paper_bgcolor=CARD, plot_bgcolor=CARD,
         font=dict(color="#777", size=9),
-        xaxis=dict(showgrid=False, title="Week", tickfont=dict(size=8)),
-        yaxis=dict(showgrid=True, gridcolor=GRID, tickfont=dict(size=8)),
-        margin=dict(t=30, b=20, l=35, r=10),
-        height=190,
-        title=dict(text=f"<b>WEEK {title}</b>", font=dict(size=11, color="#aaa"), x=0.5),
+        xaxis=dict(showgrid=False, tickfont=dict(size=7), tickcolor="#444"),
+        yaxis=dict(showgrid=True, gridcolor=GRID, tickfont=dict(size=7)),
+        margin=dict(t=36, b=16, l=30, r=10),
+        height=185,
+        title=dict(text=f"<b>WEEK {title}</b>", font=dict(size=10, color="#888"), x=0.5, y=0.97),
     )
     return fig
 

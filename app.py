@@ -32,31 +32,32 @@ st.markdown("""
 .card-title {
   font-size:0.62rem; color:#666;
   letter-spacing:0.18em; text-transform:uppercase;
-  text-align:center; margin-bottom:6px;
+  text-align:center; margin-bottom:4px;
 }
-.big-num { font-size:1.7rem; font-weight:800; line-height:1.1; text-align:center; }
+.big-num { font-size:1.6rem; font-weight:800; line-height:1.1; text-align:center; }
 .bench-row {
   display:flex; justify-content:space-around;
-  margin:6px 0 2px; gap:4px;
+  margin:4px 0 2px; gap:2px;
 }
 .bench-item { text-align:center; }
-.bench-val { font-size:0.82rem; font-weight:600; color:#dddddd; }
-.bench-lbl { font-size:0.55rem; color:#555; text-transform:uppercase; letter-spacing:0.1em; }
-.pct-num { font-size:0.78rem; color:#aaa; text-align:center; margin-top:2px; }
+.bench-val { font-size:0.78rem; font-weight:600; color:#cccccc; }
+.bench-lbl { font-size:0.52rem; color:#555; text-transform:uppercase; letter-spacing:0.08em; }
+.pct-num { font-size:0.72rem; text-align:center; margin-top:2px; }
 .pct-bar-bg {
-  background:#333; border-radius:3px;
-  height:7px; margin-top:4px; overflow:hidden;
+  background:#2a2a2a; border-radius:3px;
+  height:5px; margin-top:3px; overflow:hidden;
 }
 .section-hdr {
-  font-size:0.68rem; color:#777; letter-spacing:0.22em;
-  text-transform:uppercase; padding:3px 0;
-  border-bottom:1px solid #333; margin:8px 0 6px;
-  font-weight:600;
+  font-size:0.65rem; color:#666; letter-spacing:0.2em;
+  text-transform:uppercase; padding:2px 0;
+  border-bottom:1px solid #2a2a2a; margin:6px 0 5px;
+  font-weight:700;
 }
-.acwr-side-block { background:#1c1c1c; border-radius:6px; padding:10px; border:1px solid #2e2e2e; }
+.acwr-side-block { background:#1c1c1c; border-radius:6px; padding:8px; border:1px solid #2e2e2e; }
+.density-block { background:#1c1c1c; border-radius:6px; padding:8px; border:1px solid #2e2e2e; }
 h1,h2,h3,h4 { color:#f0f0f0 !important; }
-.stDataFrame { background:#1a1a1a !important; }
-div[data-testid="stHorizontalBlock"] { gap:8px; }
+div[data-testid="stHorizontalBlock"] { gap:6px; }
+div[data-testid="stPlotlyChart"] { margin-bottom:-12px; }
 </style>
 """, unsafe_allow_html=True)
 
@@ -88,9 +89,9 @@ def pct_bar(pct):
 def volume_card(label, today_val, bench, color):
     pct = (today_val / bench["MAX"] * 100) if bench["MAX"] > 0 else 0
     return f"""
-<div class="card">
+<div class="card" style="border-top:2px solid {color}">
   <div class="card-title">{label}</div>
-  <div class="big-num" style="color:{color}">{fmt(today_val)}</div>
+  <div class="big-num" style="color:#ffffff">{fmt(today_val)}</div>
   <div class="bench-row">
     <div class="bench-item"><div class="bench-val">{fmt(bench['MAX'])}</div><div class="bench-lbl">MAX</div></div>
     <div class="bench-item"><div class="bench-val">{fmt(bench['GAME'])}</div><div class="bench-lbl">GAME</div></div>
@@ -104,13 +105,13 @@ def volume_card(label, today_val, bench, color):
 def density_card(label, today_val, bench, color):
     pct = (today_val / bench["MAX"] * 100) if bench["MAX"] > 0 else 0
     return f"""
-<div class="card">
-  <div class="card-title">{label}</div>
-  <div class="big-num" style="color:{color}">{fmt(today_val, 1)}</div>
+<div style="text-align:center;padding:6px 4px">
+  <div class="card-title" style="color:{color}">{label}</div>
+  <div class="big-num" style="color:#ffffff;font-size:1.4rem">{fmt(today_val, 1)}</div>
   <div class="bench-row">
-    <div class="bench-item"><div class="bench-val">{fmt(bench['MAX'],1)}</div><div class="bench-lbl">MAX</div></div>
-    <div class="bench-item"><div class="bench-val">{fmt(bench['GAME'],1)}</div><div class="bench-lbl">GAME</div></div>
-    <div class="bench-item"><div class="bench-val">{fmt(bench['PRAC'],1)}</div><div class="bench-lbl">PRAC</div></div>
+    <div class="bench-item"><div class="bench-val" style="font-size:0.7rem">{fmt(bench['MAX'],1)}</div><div class="bench-lbl">MAX</div></div>
+    <div class="bench-item"><div class="bench-val" style="font-size:0.7rem">{fmt(bench['GAME'],1)}</div><div class="bench-lbl">GAME</div></div>
+    <div class="bench-item"><div class="bench-val" style="font-size:0.7rem">{fmt(bench['PRAC'],1)}</div><div class="bench-lbl">PRAC</div></div>
   </div>
   <div class="pct-num" style="color:{pct_color(pct)}">{pct:.0f}%</div>
   {pct_bar(pct)}
@@ -207,13 +208,13 @@ st.markdown(f"""
 
 
 # ── ROW 1: ACWR gauge │ Daily LOAD │ Week LOAD ───────────
-c1, c2, c3 = st.columns([1, 2, 2])
+c1, c2, c3 = st.columns([1, 2.2, 1.8])
 
 with c1:
     load_acwr = acwr_all["LOAD"]["acwr"] or 0
     load_acute = acwr_all["LOAD"]["acute"]
     st.markdown('<div class="card-title" style="margin-top:4px">ACWR (LOAD) &nbsp;<span style="color:#555;font-size:0.6rem;letter-spacing:0.1em">AVG</span></div>', unsafe_allow_html=True)
-    st.plotly_chart(acwr_gauge(load_acwr, height=125), use_container_width=True, config={"displayModeBar": False})
+    st.plotly_chart(acwr_gauge(load_acwr, height=110), use_container_width=True, config={"displayModeBar": False})
     st.markdown(f"""
     <div style="text-align:center;margin:-4px 0 4px">
       <span style="font-size:0.58rem;color:#555;letter-spacing:0.18em;text-transform:uppercase">AVG &nbsp;{fmt(load_acute, 1)}</span>
@@ -250,7 +251,7 @@ with c3:
 # ── ROW 2: VOLUME │ DENSITY │ INTENSITY ──────────────────
 st.markdown('<div class="section-hdr">VOLUME &nbsp;<span style="color:#ccc;font-size:0.85rem">' + fmt(today["MIN"], 1) + '</span> min</div>', unsafe_allow_html=True)
 
-v1, v2, v3, v4, gap, d1, d2, gap2, i1 = st.columns([1.4, 1.4, 1.4, 1.4, 0.1, 1.3, 1.3, 0.1, 1.4])
+v1, v2, v3, v4, d_block, i1 = st.columns([1.3, 1.3, 1.3, 1.3, 2.2, 1.6])
 
 with v1:
     st.markdown(volume_card("LOAD", today["LOAD"], bench["LOAD"], "#cc3344"), unsafe_allow_html=True)
@@ -261,33 +262,38 @@ with v3:
 with v4:
     st.markdown(volume_card("SPRINT", today["SPRINT"], bench["SPRINT"], "#dd2200"), unsafe_allow_html=True)
 
-with d1:
-    st.markdown('<div class="card-title" style="margin-bottom:0">DENSITY</div>', unsafe_allow_html=True)
-    st.markdown(density_card("EXE/MIN", today["EXE_MIN"], bench["EXE_MIN"], "#c8a400"), unsafe_allow_html=True)
-with d2:
-    st.markdown('<div style="margin-top:18px"></div>', unsafe_allow_html=True)
-    st.markdown(density_card("CHG/MIN", today["CHG_MIN"], bench["CHG_MIN"], "#ff7722"), unsafe_allow_html=True)
+with d_block:
+    st.markdown('<div class="density-block">', unsafe_allow_html=True)
+    st.markdown('<div class="card-title">DENSITY</div>', unsafe_allow_html=True)
+    dc1, dc2 = st.columns(2)
+    with dc1:
+        st.markdown(density_card("EXE/MIN", today["EXE_MIN"], bench["EXE_MIN"], "#c8a400"), unsafe_allow_html=True)
+    with dc2:
+        st.markdown(density_card("CHG/MIN", today["CHG_MIN"], bench["CHG_MIN"], "#ff7722"), unsafe_allow_html=True)
+    st.markdown('</div>', unsafe_allow_html=True)
 
 with i1:
-    st.markdown('<div class="card-title">INTENSITY</div>', unsafe_allow_html=True)
     exe_g = bench["EXE_MIN"]["GAME"]
     chg_g = bench["CHG_MIN"]["GAME"]
     load_g = bench["LOAD"]["GAME"]
     pcts = []
     if exe_g > 0:
-        pcts.append(today["EXE_MIN"] / exe_g * 100)
+        pcts.append(min(today["EXE_MIN"] / exe_g * 100, 100))
     if chg_g > 0:
-        pcts.append(today["CHG_MIN"] / chg_g * 100)
+        pcts.append(min(today["CHG_MIN"] / chg_g * 100, 100))
     intensity_pct = np.mean(pcts) if pcts else 0
     vol_pct = (today["LOAD"] / load_g * 100) if load_g > 0 else 0
+    st.markdown('<div class="density-block" style="text-align:center">', unsafe_allow_html=True)
+    st.markdown('<div class="card-title">INTENSITY</div>', unsafe_allow_html=True)
     st.plotly_chart(intensity_donut(intensity_pct), use_container_width=True, config={"displayModeBar": False})
     st.markdown(f"""
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px;text-align:center;margin-top:2px">
-      <div><div class="bench-lbl">VOL</div><div style="font-size:0.85rem;color:#ccc">{vol_pct:.0f}%</div></div>
-      <div><div class="bench-lbl">DENS</div><div style="font-size:0.85rem;color:#ccc">{intensity_pct:.0f}%</div></div>
-      <div><div class="bench-lbl">min</div><div style="font-size:0.85rem;color:#ccc">{fmt(today['MIN'])}</div></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:2px;text-align:center;margin-top:-4px">
+      <div><div class="bench-lbl">VOL</div><div style="font-size:0.82rem;color:#ccc">{min(vol_pct,999):.0f}%</div></div>
+      <div><div class="bench-lbl">DENS</div><div style="font-size:0.82rem;color:#ccc">{intensity_pct:.0f}%</div></div>
+      <div><div class="bench-lbl">min</div><div style="font-size:0.82rem;color:#ccc">{fmt(today['MIN'])}</div></div>
     </div>
     """, unsafe_allow_html=True)
+    st.markdown('</div>', unsafe_allow_html=True)
 
 
 # ── ROW 3: TOT / TODAY / MAX / GAME / PRAC Table ─────────
