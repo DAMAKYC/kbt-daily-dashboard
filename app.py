@@ -26,7 +26,7 @@ st.markdown("""
 [data-testid="stSidebar"] * { color:#888 !important; }
 .card {
   background:#1c1c1c; border-radius:6px;
-  padding:12px 10px; margin-bottom:6px;
+  padding:8px 8px; margin-bottom:4px;
   border:1px solid #2e2e2e;
 }
 .card-title {
@@ -34,7 +34,7 @@ st.markdown("""
   letter-spacing:0.18em; text-transform:uppercase;
   text-align:center; margin-bottom:6px;
 }
-.big-num { font-size:2rem; font-weight:800; line-height:1.1; text-align:center; }
+.big-num { font-size:1.7rem; font-weight:800; line-height:1.1; text-align:center; }
 .bench-row {
   display:flex; justify-content:space-around;
   margin:6px 0 2px; gap:4px;
@@ -49,8 +49,8 @@ st.markdown("""
 }
 .section-hdr {
   font-size:0.68rem; color:#777; letter-spacing:0.22em;
-  text-transform:uppercase; padding:4px 0;
-  border-bottom:1px solid #333; margin:14px 0 8px;
+  text-transform:uppercase; padding:3px 0;
+  border-bottom:1px solid #333; margin:8px 0 6px;
   font-weight:600;
 }
 .acwr-side-block { background:#1c1c1c; border-radius:6px; padding:10px; border:1px solid #2e2e2e; }
@@ -69,10 +69,19 @@ def fmt(v, d=0):
     return f"{v:,.{d}f}"
 
 
-def pct_bar(pct, color):
+def pct_color(pct):
+    if pct >= 80:
+        return "#4ade80"
+    if pct >= 60:
+        return "#facc15"
+    return "#f87171"
+
+
+def pct_bar(pct):
     p = min(100, max(0, float(pct or 0)))
+    c = pct_color(p)
     return (f'<div class="pct-bar-bg">'
-            f'<div style="width:{p:.0f}%;background:{color};height:6px;border-radius:3px"></div>'
+            f'<div style="width:{p:.0f}%;background:{c};height:6px;border-radius:3px"></div>'
             f'</div>')
 
 
@@ -87,8 +96,8 @@ def volume_card(label, today_val, bench, color):
     <div class="bench-item"><div class="bench-val">{fmt(bench['GAME'])}</div><div class="bench-lbl">GAME</div></div>
     <div class="bench-item"><div class="bench-val">{fmt(bench['PRAC'])}</div><div class="bench-lbl">PRAC</div></div>
   </div>
-  <div class="pct-num">{pct:.0f}%</div>
-  {pct_bar(pct, color)}
+  <div class="pct-num" style="color:{pct_color(pct)}">{pct:.0f}%</div>
+  {pct_bar(pct)}
 </div>"""
 
 
@@ -103,8 +112,8 @@ def density_card(label, today_val, bench, color):
     <div class="bench-item"><div class="bench-val">{fmt(bench['GAME'],1)}</div><div class="bench-lbl">GAME</div></div>
     <div class="bench-item"><div class="bench-val">{fmt(bench['PRAC'],1)}</div><div class="bench-lbl">PRAC</div></div>
   </div>
-  <div class="pct-num">{pct:.0f}%</div>
-  {pct_bar(pct, color)}
+  <div class="pct-num" style="color:{pct_color(pct)}">{pct:.0f}%</div>
+  {pct_bar(pct)}
 </div>"""
 
 
@@ -203,30 +212,25 @@ c1, c2, c3 = st.columns([1, 2, 2])
 with c1:
     load_acwr = acwr_all["LOAD"]["acwr"] or 0
     load_acute = acwr_all["LOAD"]["acute"]
-    load_chronic = acwr_all["LOAD"]["chronic"]
-    st.markdown('<div class="card-title" style="margin-top:8px">ACWR (LOAD)</div>', unsafe_allow_html=True)
-    st.plotly_chart(acwr_gauge(load_acwr, height=130), use_container_width=True, config={"displayModeBar": False})
+    st.markdown('<div class="card-title" style="margin-top:4px">ACWR (LOAD) &nbsp;<span style="color:#555;font-size:0.6rem;letter-spacing:0.1em">AVG</span></div>', unsafe_allow_html=True)
+    st.plotly_chart(acwr_gauge(load_acwr, height=125), use_container_width=True, config={"displayModeBar": False})
     st.markdown(f"""
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:2px">
-      <div class="card" style="padding:7px;text-align:center">
-        <div class="bench-lbl">ACUTE</div>
-        <div style="font-size:0.92rem;font-weight:700;color:#ccc">{fmt(load_acute, 1)}</div>
-      </div>
-      <div class="card" style="padding:7px;text-align:center">
-        <div class="bench-lbl">CHRONIC</div>
-        <div style="font-size:0.92rem;font-weight:700;color:#ccc">{fmt(load_chronic, 1)}</div>
-      </div>
+    <div style="text-align:center;margin:-4px 0 4px">
+      <span style="font-size:0.58rem;color:#555;letter-spacing:0.18em;text-transform:uppercase">AVG &nbsp;{fmt(load_acute, 1)}</span>
     </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:6px">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:2px">
       <div class="card" style="padding:7px;text-align:center">
         <div class="bench-lbl">MONTH</div>
         <div style="font-size:0.92rem;font-weight:700;color:#ccc">{fmt(load_m)}</div>
       </div>
-      <div style="background:#1a1a1a;border:1px solid #85063B;border-radius:8px;
+      <div style="background:#1a1a1a;border:1px solid #c8a400;border-radius:6px;
                   padding:7px;text-align:center">
         <div class="bench-lbl">WEEK</div>
-        <div style="font-size:0.92rem;font-weight:700;color:#ccc">{fmt(load_w)}</div>
+        <div style="font-size:0.92rem;font-weight:700;color:#c8a400">{fmt(load_w)}</div>
       </div>
+    </div>
+    <div style="text-align:center;margin-top:4px">
+      <span style="font-size:0.58rem;color:#555;letter-spacing:0.18em;text-transform:uppercase">MODIFY</span>
     </div>
     """, unsafe_allow_html=True)
 
@@ -289,19 +293,41 @@ with i1:
 # ── ROW 3: TOT / TODAY / MAX / GAME / PRAC Table ─────────
 st.markdown('<div class="section-hdr">COMPARISON</div>', unsafe_allow_html=True)
 
-comp_cols = ["", "TOT (Month)", "TODAY", "MAX", "GAME", "PRAC"]
-rows = [
-    ["LOAD",   fmt(load_m),   fmt(today["LOAD"]),      fmt(bench["LOAD"]["MAX"]),      fmt(bench["LOAD"]["GAME"]),      fmt(bench["LOAD"]["PRAC"])],
-    ["EXE",    fmt(exe_m),    fmt(today["EXERTION"]),   fmt(bench["EXERTION"]["MAX"]),  fmt(bench["EXERTION"]["GAME"]),  fmt(bench["EXERTION"]["PRAC"])],
-    ["CHG",    fmt(chg_m),    fmt(today["CHANGE"]),     fmt(bench["CHANGE"]["MAX"]),    fmt(bench["CHANGE"]["GAME"]),    fmt(bench["CHANGE"]["PRAC"])],
-    ["SPRT",   fmt(sprint_m), fmt(today["SPRINT"]),     fmt(bench["SPRINT"]["MAX"]),    fmt(bench["SPRINT"]["GAME"]),    fmt(bench["SPRINT"]["PRAC"])],
+comp_data = [
+    ("LOAD",  fmt(load_m),   fmt(today["LOAD"]),     fmt(bench["LOAD"]["MAX"]),     fmt(bench["LOAD"]["GAME"]),     fmt(bench["LOAD"]["PRAC"])),
+    ("EXE",   fmt(exe_m),    fmt(today["EXERTION"]),  fmt(bench["EXERTION"]["MAX"]), fmt(bench["EXERTION"]["GAME"]), fmt(bench["EXERTION"]["PRAC"])),
+    ("CHG",   fmt(chg_m),    fmt(today["CHANGE"]),    fmt(bench["CHANGE"]["MAX"]),   fmt(bench["CHANGE"]["GAME"]),   fmt(bench["CHANGE"]["PRAC"])),
+    ("SPRT",  fmt(sprint_m), fmt(today["SPRINT"]),    fmt(bench["SPRINT"]["MAX"]),   fmt(bench["SPRINT"]["GAME"]),   fmt(bench["SPRINT"]["PRAC"])),
 ]
-comp_df = pd.DataFrame(rows, columns=comp_cols).set_index("")
-st.dataframe(
-    comp_df.style.set_properties(**{"text-align": "center"})
-           .set_table_styles([{"selector": "th", "props": [("color", "#666"), ("font-size", "0.75rem")]}]),
-    use_container_width=True,
-)
+th = "font-size:0.68rem;color:#555;letter-spacing:0.12em;text-align:center;padding:5px 8px;border-bottom:1px solid #333"
+td_base = "font-size:0.85rem;text-align:center;padding:5px 8px;color:#ccc"
+td_label = "font-size:0.72rem;text-align:left;padding:5px 8px;color:#777;font-weight:600;letter-spacing:0.1em"
+td_today = "font-size:0.92rem;text-align:center;padding:5px 8px;font-weight:800;color:#fff;background:#85063B;border-radius:4px"
+rows_html = ""
+for r in comp_data:
+    rows_html += f"""<tr>
+      <td style="{td_label}">{r[0]}</td>
+      <td style="{td_base}">{r[1]}</td>
+      <td style="{td_today}">{r[2]}</td>
+      <td style="{td_base}">{r[3]}</td>
+      <td style="{td_base}">{r[4]}</td>
+      <td style="{td_base}">{r[5]}</td>
+    </tr>"""
+st.markdown(f"""
+<div style="background:#1c1c1c;border-radius:6px;border:1px solid #2e2e2e;overflow:hidden;margin-bottom:6px">
+<table style="width:100%;border-collapse:collapse">
+  <thead><tr>
+    <th style="{th}"></th>
+    <th style="{th}">TOT</th>
+    <th style="{th};color:#85063B">TODAY</th>
+    <th style="{th}">MAX</th>
+    <th style="{th}">GAME</th>
+    <th style="{th}">PRAC</th>
+  </tr></thead>
+  <tbody>{rows_html}</tbody>
+</table>
+</div>
+""", unsafe_allow_html=True)
 
 
 # ── GAME MAX ─────────────────────────────────────────────
@@ -340,32 +366,23 @@ def metric_block(label, daily_df, trend_df_, weekly_df, acwr_val, month_tot, wee
         )
     with m3:
         st.markdown('<div class="acwr-side-block">', unsafe_allow_html=True)
-        st.markdown(f'<div class="card-title">ACWR</div>', unsafe_allow_html=True)
-        st.plotly_chart(acwr_gauge(acwr_val or 0, height=110), use_container_width=True, config={"displayModeBar": False})
-        acute_row = ""
-        if acute is not None or chronic is not None:
-            acute_row = f"""
+        st.markdown(f'<div class="card-title">ACWR &nbsp;<span style="color:#555;font-size:0.58rem">AVG</span></div>', unsafe_allow_html=True)
+        st.plotly_chart(acwr_gauge(acwr_val or 0, height=105), use_container_width=True, config={"displayModeBar": False})
+        avg_line = f'<div style="text-align:center;margin:-2px 0 4px"><span style="font-size:0.58rem;color:#555;letter-spacing:0.15em">AVG &nbsp;{fmt(acute, 1) if acute is not None else "—"}</span></div>' if acute is not None else ""
+        st.markdown(f"""
+        {avg_line}
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-top:2px">
           <div style="text-align:center">
-            <div class="bench-lbl">ACUTE</div>
-            <div style="font-size:0.8rem;font-weight:600;color:#ccc">{fmt(acute, 1)}</div>
-          </div>
-          <div style="text-align:center">
-            <div class="bench-lbl">CHRONIC</div>
-            <div style="font-size:0.8rem;font-weight:600;color:#ccc">{fmt(chronic, 1)}</div>
-          </div>
-        </div>"""
-        st.markdown(f"""
-        {acute_row}
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-top:6px">
-          <div style="text-align:center">
             <div class="bench-lbl">MONTH</div>
-            <div style="font-size:0.9rem;font-weight:600;color:#ccc">{fmt(month_tot)}</div>
+            <div style="font-size:0.88rem;font-weight:600;color:#ccc">{fmt(month_tot)}</div>
           </div>
-          <div style="text-align:center;border:1px solid {color};border-radius:4px;padding:3px">
+          <div style="text-align:center;border:1px solid #c8a400;border-radius:4px;padding:3px">
             <div class="bench-lbl">WEEK</div>
-            <div style="font-size:0.9rem;font-weight:600;color:#ccc">{fmt(week_tot)}</div>
+            <div style="font-size:0.88rem;font-weight:600;color:#c8a400">{fmt(week_tot)}</div>
           </div>
+        </div>
+        <div style="text-align:center;margin-top:4px">
+          <span style="font-size:0.55rem;color:#555;letter-spacing:0.18em;text-transform:uppercase">MODIFY</span>
         </div>
         """, unsafe_allow_html=True)
         st.markdown('</div>', unsafe_allow_html=True)
