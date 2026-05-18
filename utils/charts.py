@@ -2,8 +2,8 @@ import plotly.graph_objects as go
 import numpy as np
 
 BG = "#0e0e0e"
-CARD = "#1a1a1a"
-CARD2 = "#222222"
+CARD = "#1c1c1c"
+CARD2 = "#252525"
 GRID = "#2a2a2a"
 
 CAT_COLORS = {

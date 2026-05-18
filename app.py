@@ -21,38 +21,39 @@ st.set_page_config(
 
 st.markdown("""
 <style>
-[data-testid="stAppViewContainer"] { background:#0e0e0e; color:#f0f0f0; }
-[data-testid="stSidebar"] { background:#111111; }
-[data-testid="stSidebar"] * { color:#aaa !important; }
+[data-testid="stAppViewContainer"] { background:#111111; color:#ffffff; }
+[data-testid="stSidebar"] { background:#0a0a0a; }
+[data-testid="stSidebar"] * { color:#888 !important; }
 .card {
-  background:#1a1a1a; border-radius:8px;
-  padding:14px 10px; margin-bottom:6px;
-  border:1px solid #252525;
+  background:#1c1c1c; border-radius:6px;
+  padding:12px 10px; margin-bottom:6px;
+  border:1px solid #2e2e2e;
 }
 .card-title {
-  font-size:0.65rem; color:#555;
-  letter-spacing:0.15em; text-transform:uppercase;
+  font-size:0.62rem; color:#666;
+  letter-spacing:0.18em; text-transform:uppercase;
   text-align:center; margin-bottom:6px;
 }
-.big-num { font-size:2rem; font-weight:700; line-height:1.1; text-align:center; }
+.big-num { font-size:2rem; font-weight:800; line-height:1.1; text-align:center; }
 .bench-row {
   display:flex; justify-content:space-around;
   margin:6px 0 2px; gap:4px;
 }
 .bench-item { text-align:center; }
-.bench-val { font-size:0.8rem; font-weight:600; color:#bbb; }
+.bench-val { font-size:0.82rem; font-weight:600; color:#dddddd; }
 .bench-lbl { font-size:0.55rem; color:#555; text-transform:uppercase; letter-spacing:0.1em; }
-.pct-num { font-size:0.8rem; color:#999; text-align:center; margin-top:2px; }
+.pct-num { font-size:0.78rem; color:#aaa; text-align:center; margin-top:2px; }
 .pct-bar-bg {
-  background:#2a2a2a; border-radius:3px;
-  height:6px; margin-top:4px; overflow:hidden;
+  background:#333; border-radius:3px;
+  height:7px; margin-top:4px; overflow:hidden;
 }
 .section-hdr {
-  font-size:0.7rem; color:#666; letter-spacing:0.2em;
+  font-size:0.68rem; color:#777; letter-spacing:0.22em;
   text-transform:uppercase; padding:4px 0;
-  border-bottom:1px solid #2a2a2a; margin:12px 0 8px;
+  border-bottom:1px solid #333; margin:14px 0 8px;
+  font-weight:600;
 }
-.acwr-side-block { background:#1a1a1a; border-radius:8px; padding:10px; border:1px solid #252525; }
+.acwr-side-block { background:#1c1c1c; border-radius:6px; padding:10px; border:1px solid #2e2e2e; }
 h1,h2,h3,h4 { color:#f0f0f0 !important; }
 .stDataFrame { background:#1a1a1a !important; }
 div[data-testid="stHorizontalBlock"] { gap:8px; }
