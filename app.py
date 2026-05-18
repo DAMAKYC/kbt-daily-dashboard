@@ -202,18 +202,30 @@ c1, c2, c3 = st.columns([1, 2, 2])
 
 with c1:
     load_acwr = acwr_all["LOAD"]["acwr"] or 0
+    load_acute = acwr_all["LOAD"]["acute"]
+    load_chronic = acwr_all["LOAD"]["chronic"]
     st.markdown('<div class="card-title" style="margin-top:8px">ACWR (LOAD)</div>', unsafe_allow_html=True)
-    st.plotly_chart(acwr_gauge(load_acwr, height=140), use_container_width=True, config={"displayModeBar": False})
+    st.plotly_chart(acwr_gauge(load_acwr, height=130), use_container_width=True, config={"displayModeBar": False})
     st.markdown(f"""
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:4px">
-      <div class="card" style="padding:8px;text-align:center">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:2px">
+      <div class="card" style="padding:7px;text-align:center">
+        <div class="bench-lbl">ACUTE</div>
+        <div style="font-size:0.92rem;font-weight:700;color:#ccc">{fmt(load_acute, 1)}</div>
+      </div>
+      <div class="card" style="padding:7px;text-align:center">
+        <div class="bench-lbl">CHRONIC</div>
+        <div style="font-size:0.92rem;font-weight:700;color:#ccc">{fmt(load_chronic, 1)}</div>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:6px">
+      <div class="card" style="padding:7px;text-align:center">
         <div class="bench-lbl">MONTH</div>
-        <div style="font-size:1rem;font-weight:700;color:#ccc">{fmt(load_m)}</div>
+        <div style="font-size:0.92rem;font-weight:700;color:#ccc">{fmt(load_m)}</div>
       </div>
       <div style="background:#1a1a1a;border:1px solid #85063B;border-radius:8px;
-                  padding:8px;text-align:center">
+                  padding:7px;text-align:center">
         <div class="bench-lbl">WEEK</div>
-        <div style="font-size:1rem;font-weight:700;color:#ccc">{fmt(load_w)}</div>
+        <div style="font-size:0.92rem;font-weight:700;color:#ccc">{fmt(load_w)}</div>
       </div>
     </div>
     """, unsafe_allow_html=True)
@@ -312,7 +324,7 @@ else:
 
 
 # ── PER-METRIC BLOCKS ─────────────────────────────────────
-def metric_block(label, daily_df, trend_df_, weekly_df, acwr_val, month_tot, week_tot, color):
+def metric_block(label, daily_df, trend_df_, weekly_df, acwr_val, month_tot, week_tot, color, acute=None, chronic=None):
     st.markdown(f'<div class="section-hdr">{label}</div>', unsafe_allow_html=True)
     m1, m2, m3 = st.columns([2, 2, 1])
 
@@ -329,24 +341,43 @@ def metric_block(label, daily_df, trend_df_, weekly_df, acwr_val, month_tot, wee
     with m3:
         st.markdown('<div class="acwr-side-block">', unsafe_allow_html=True)
         st.markdown(f'<div class="card-title">ACWR</div>', unsafe_allow_html=True)
-        st.plotly_chart(acwr_gauge(acwr_val or 0, height=120), use_container_width=True, config={"displayModeBar": False})
+        st.plotly_chart(acwr_gauge(acwr_val or 0, height=110), use_container_width=True, config={"displayModeBar": False})
+        acute_row = ""
+        if acute is not None or chronic is not None:
+            acute_row = f"""
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-top:2px">
+          <div style="text-align:center">
+            <div class="bench-lbl">ACUTE</div>
+            <div style="font-size:0.8rem;font-weight:600;color:#ccc">{fmt(acute, 1)}</div>
+          </div>
+          <div style="text-align:center">
+            <div class="bench-lbl">CHRONIC</div>
+            <div style="font-size:0.8rem;font-weight:600;color:#ccc">{fmt(chronic, 1)}</div>
+          </div>
+        </div>"""
         st.markdown(f"""
-        <div style="text-align:center;margin-top:2px">
-          <div class="bench-lbl">MONTH</div>
-          <div style="font-size:1rem;font-weight:600;color:#ccc">{fmt(month_tot)}</div>
-        </div>
-        <div style="text-align:center;border:1px solid {color};border-radius:4px;
-                    padding:4px;margin-top:6px">
-          <div class="bench-lbl">WEEK</div>
-          <div style="font-size:1rem;font-weight:600;color:#ccc">{fmt(week_tot)}</div>
+        {acute_row}
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-top:6px">
+          <div style="text-align:center">
+            <div class="bench-lbl">MONTH</div>
+            <div style="font-size:0.9rem;font-weight:600;color:#ccc">{fmt(month_tot)}</div>
+          </div>
+          <div style="text-align:center;border:1px solid {color};border-radius:4px;padding:3px">
+            <div class="bench-lbl">WEEK</div>
+            <div style="font-size:0.9rem;font-weight:600;color:#ccc">{fmt(week_tot)}</div>
+          </div>
         </div>
         """, unsafe_allow_html=True)
         st.markdown('</div>', unsafe_allow_html=True)
 
 
-metric_block("EXERTION", daily_exe,    exe_trend,    weekly_exe,    acwr_all["EXERTION"]["acwr"], exe_m,    exe_w,    "#c8a400")
-metric_block("CHANGES",  daily_chg,    chg_trend,    weekly_chg,    acwr_all["CHANGE"]["acwr"],   chg_m,    chg_w,    "#ff7722")
-metric_block("SPRINT",   daily_sprint, sprint_trend, weekly_sprint, acwr_all["SPRINT"]["acwr"],   sprint_m, sprint_w, "#dd2200")
+metric_block("EXERTION", daily_exe,    exe_trend,    weekly_exe,    acwr_all["EXERTION"]["acwr"], exe_m,    exe_w,    "#c8a400",
+             acute=acwr_all["EXERTION"]["acute"], chronic=acwr_all["EXERTION"]["chronic"])
+metric_block("CHANGES",  daily_chg,    chg_trend,    weekly_chg,    acwr_all["CHANGE"]["acwr"],   chg_m,    chg_w,    "#ff7722",
+             acute=acwr_all["CHANGE"]["acute"], chronic=acwr_all["CHANGE"]["chronic"])
+metric_block("SPRINT",   daily_sprint, sprint_trend, weekly_sprint, acwr_all["SPRINT"]["acwr"],   sprint_m, sprint_w, "#dd2200",
+             acute=acwr_all["SPRINT"]["acute"], chronic=acwr_all["SPRINT"]["chronic"])
 metric_block("SC",       daily_sc,     None,         weekly_sc,     None,                         0,        0,        "#777777")
 metric_block("LOAD",     get_daily_metric(df, player, LOAD_COL, date_str, days=30),
-             load_trend, weekly_load, acwr_all["LOAD"]["acwr"], load_m, load_w, "#85063B")
+             load_trend, weekly_load, acwr_all["LOAD"]["acwr"], load_m, load_w, "#85063B",
+             acute=acwr_all["LOAD"]["acute"], chronic=acwr_all["LOAD"]["chronic"])
