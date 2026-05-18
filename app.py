@@ -4,7 +4,7 @@ import numpy as np
 from utils.data_loader import load_data, validate_csv, append_csv
 from utils.acwr import calc_all_acwr, acwr_trend
 from utils.metrics import (
-    get_today_summary, get_benchmarks,
+    get_today_summary, get_benchmarks, get_game_max,
     get_daily_stacked, get_daily_metric,
     get_weekly_metric, get_period_totals,
     LOAD_COL, EXE_COL, CHG_COL, SPRINT_COL,
@@ -290,6 +290,25 @@ st.dataframe(
            .set_table_styles([{"selector": "th", "props": [("color", "#666"), ("font-size", "0.75rem")]}]),
     use_container_width=True,
 )
+
+
+# ── GAME MAX ─────────────────────────────────────────────
+st.markdown('<div class="section-hdr">GAME MAX</div>', unsafe_allow_html=True)
+game_max = get_game_max(df, player)
+if game_max:
+    gm_cols = st.columns(6)
+    for col_obj, row in zip(gm_cols, game_max):
+        with col_obj:
+            st.markdown(f"""
+            <div class="card" style="text-align:center;padding:10px 6px">
+              <div class="card-title">{row['metric']}</div>
+              <div style="font-size:1.4rem;font-weight:800;color:#ffffff">{row['value']}</div>
+              <div style="font-size:0.65rem;color:#666;margin-top:4px">{row['vs']}</div>
+              <div style="font-size:0.65rem;color:#555">{row['date']}</div>
+            </div>
+            """, unsafe_allow_html=True)
+else:
+    st.markdown('<div style="color:#555;font-size:0.8rem">試合データなし</div>', unsafe_allow_html=True)
 
 
 # ── PER-METRIC BLOCKS ─────────────────────────────────────

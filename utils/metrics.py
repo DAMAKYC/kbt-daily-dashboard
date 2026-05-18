@@ -104,6 +104,42 @@ def get_benchmarks(df, player):
     return result
 
 
+def get_game_max(df, player):
+    pdf = df[df["Name"] == player].copy()
+    pdf = pdf[pdf["CATEGORY"].isin(GAME_CATS)]
+    if pdf.empty:
+        return None
+
+    pdf["Date_norm"] = pd.to_datetime(pdf["Date"]).dt.normalize()
+    for c in [LOAD_COL, EXE_COL, CHG_COL, EXE_MIN_COL, CHG_MIN_COL, SPRINT_COL]:
+        pdf[c] = pd.to_numeric(pdf[c], errors="coerce").fillna(0)
+
+    daily = pdf.groupby(["Date_norm", "VS"]).agg({
+        LOAD_COL: "sum", EXE_COL: "sum", CHG_COL: "sum", SPRINT_COL: "sum",
+        EXE_MIN_COL: "mean", CHG_MIN_COL: "mean",
+    }).reset_index()
+
+    rows = []
+    for key, col in [
+        ("LOAD", LOAD_COL), ("EXE", EXE_COL),
+        ("EXE/MIN", EXE_MIN_COL), ("CoO", CHG_COL),
+        ("CoO/MIN", CHG_MIN_COL), ("SPRINT", SPRINT_COL),
+    ]:
+        if daily[col].max() == 0:
+            rows.append({"metric": key, "value": "—", "vs": "—", "date": "—"})
+            continue
+        idx = daily[col].idxmax()
+        best = daily.loc[idx]
+        val = best[col]
+        rows.append({
+            "metric": key,
+            "value": f"{val:,.1f}" if key in ("EXE/MIN", "CoO/MIN") else f"{int(val):,}",
+            "vs": str(best["VS"]),
+            "date": best["Date_norm"].strftime("%m/%d"),
+        })
+    return rows
+
+
 def get_daily_stacked(df, player, end_date, days=30):
     pdf = _prep(df, player, LOAD_COL)
     pdf["CatGroup"] = pdf["CATEGORY"].apply(categorize)
