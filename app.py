@@ -34,13 +34,13 @@ st.markdown("""
   letter-spacing:0.18em; text-transform:uppercase;
   text-align:center; margin-bottom:4px;
 }
-.big-num { font-size:1.6rem; font-weight:800; line-height:1.1; text-align:center; }
+.big-num { font-size:1.6rem; font-weight:600; line-height:1.1; text-align:center; }
 .bench-row {
   display:flex; justify-content:space-around;
   margin:4px 0 2px; gap:2px;
 }
 .bench-item { text-align:center; }
-.bench-val { font-size:0.78rem; font-weight:600; color:#cccccc; }
+.bench-val { font-size:0.78rem; font-weight:400; color:#aaaaaa; }
 .bench-lbl { font-size:0.52rem; color:#555; text-transform:uppercase; letter-spacing:0.08em; }
 .pct-num { font-size:0.72rem; text-align:center; margin-top:2px; }
 .pct-bar-bg {
@@ -107,7 +107,7 @@ def density_card(label, today_val, bench, color):
     return f"""
 <div style="text-align:center;padding:6px 4px">
   <div class="card-title" style="color:{color}">{label}</div>
-  <div class="big-num" style="color:#ffffff;font-size:1.4rem">{fmt(today_val, 1)}</div>
+  <div class="big-num" style="color:#ffffff;font-size:1.4rem;font-weight:600">{fmt(today_val, 1)}</div>
   <div class="bench-row">
     <div class="bench-item"><div class="bench-val" style="font-size:0.7rem">{fmt(bench['MAX'],1)}</div><div class="bench-lbl">MAX</div></div>
     <div class="bench-item"><div class="bench-val" style="font-size:0.7rem">{fmt(bench['GAME'],1)}</div><div class="bench-lbl">GAME</div></div>
@@ -346,7 +346,7 @@ if game_max:
             st.markdown(f"""
             <div class="card" style="text-align:center;padding:10px 6px">
               <div class="card-title">{row['metric']}</div>
-              <div style="font-size:1.4rem;font-weight:800;color:#ffffff">{row['value']}</div>
+              <div style="font-size:1.4rem;font-weight:600;color:#ffffff">{row['value']}</div>
               <div style="font-size:0.65rem;color:#666;margin-top:4px">{row['vs']}</div>
               <div style="font-size:0.65rem;color:#555">{row['date']}</div>
             </div>
