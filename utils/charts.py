@@ -122,8 +122,8 @@ def daily_bar_acwr(daily_df, acwr_df, title, stacked=False, color="#85063B"):
             font=dict(size=7, color="#666"), bgcolor="rgba(0,0,0,0)",
             itemwidth=30, traceorder="normal",
         ),
-        margin=dict(t=36, b=16, l=30, r=30),
-        height=185,
+        margin=dict(t=34, b=12, l=28, r=28),
+        height=155,
         title=dict(text=f"<b>{title}</b>", font=dict(size=10, color="#888"), x=0.5, y=0.97),
     )
     return fig
@@ -144,8 +144,8 @@ def weekly_bar(weekly_df, title, color="#85063B"):
         font=dict(color="#777", size=9),
         xaxis=dict(showgrid=False, tickfont=dict(size=7), tickcolor="#444"),
         yaxis=dict(showgrid=True, gridcolor=GRID, tickfont=dict(size=7)),
-        margin=dict(t=36, b=16, l=30, r=10),
-        height=185,
+        margin=dict(t=34, b=12, l=28, r=10),
+        height=155,
         title=dict(text=f"<b>WEEK {title}</b>", font=dict(size=10, color="#888"), x=0.5, y=0.97),
     )
     return fig
@@ -169,7 +169,7 @@ def intensity_donut(pct):
     )
     fig.update_layout(
         paper_bgcolor=CARD, plot_bgcolor=CARD,
-        margin=dict(t=5, b=5, l=5, r=5),
-        height=130,
+        margin=dict(t=4, b=4, l=4, r=4),
+        height=110,
     )
     return fig
