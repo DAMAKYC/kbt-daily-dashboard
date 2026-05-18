@@ -65,17 +65,25 @@ def daily_bar_acwr(daily_df, acwr_df, title, stacked=False, color="#85063B"):
     fig = go.Figure()
 
     if stacked:
-        for cat, c in CAT_COLORS.items():
-            if cat in daily_df.columns and daily_df[cat].sum() > 0:
-                fig.add_trace(go.Bar(
-                    x=daily_df["Date_norm"], y=daily_df[cat],
-                    name=cat, marker_color=c, yaxis="y1",
-                ))
+        cats_present = [c for c in CAT_COLORS if c in daily_df.columns and daily_df[c].sum() > 0]
+        total = sum(daily_df[c] for c in cats_present) if cats_present else None
+        for i, cat in enumerate(cats_present):
+            is_top = (i == len(cats_present) - 1)
+            fig.add_trace(go.Bar(
+                x=daily_df["Date_norm"], y=daily_df[cat],
+                name=cat, marker_color=CAT_COLORS[cat], yaxis="y1",
+                text=[f"{int(v)}" if v > 0 else "" for v in (total if is_top else daily_df[cat])],
+                textposition="outside" if is_top else "none",
+                textfont=dict(size=7, color="#888"),
+            ))
     else:
         fig.add_trace(go.Bar(
             x=daily_df["Date"], y=daily_df["value"],
             marker_color=color, name=title, yaxis="y1",
             showlegend=False,
+            text=[f"{int(v)}" if v > 0 else "" for v in daily_df["value"]],
+            textposition="outside",
+            textfont=dict(size=7, color="#888"),
         ))
 
     if acwr_df is not None and len(acwr_df) > 0:
@@ -101,7 +109,7 @@ def daily_bar_acwr(daily_df, acwr_df, title, stacked=False, color="#85063B"):
         paper_bgcolor=CARD, plot_bgcolor=CARD,
         font=dict(color="#777", size=9),
         xaxis=dict(showgrid=False, tickformat="%m/%d", tickfont=dict(size=8), tickcolor="#444"),
-        yaxis=dict(showgrid=True, gridcolor=GRID, tickfont=dict(size=8), tickcolor="#444"),
+        yaxis=dict(showgrid=True, gridcolor=GRID, tickfont=dict(size=8), tickcolor="#444", autorange=True),
         yaxis2=dict(
             overlaying="y", side="right",
             range=[0, 2.2],
